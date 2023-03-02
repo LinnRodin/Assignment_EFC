@@ -15,11 +15,7 @@ namespace Assignment_EFC.Models
         public int CustomerId { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-        public List<Comment> Comments { get; set; }
-
-        public Ticket()
-        {
-            Comments = new List<Comment>();
-        }
+        public List<Comment> Comments { get; set; } = null!;
     }
+
 }
