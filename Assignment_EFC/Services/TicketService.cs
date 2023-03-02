@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Assignment_EFC.Services
 {
-    internal class TicketService
+    public class TicketService
     {
         private static DataContext _context = new DataContext();
 

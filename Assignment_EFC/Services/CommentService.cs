@@ -23,7 +23,7 @@ namespace Assignment_EFC.Services
             }
         }
 
-        public static async Task<List<Comment>> GetCommentsAsync(int ticketId)
+        public static async Task<List<Comment>> GetAllCommentsAsync(int ticketId)
         {
             var ticket = await TicketService.GetAsync(ticketId);
 
@@ -35,7 +35,7 @@ namespace Assignment_EFC.Services
             return new List<Comment>();
         }
 
-        public static async Task<Comment?> GetCommentAsync(int ticketId, int commentId)
+        public static async Task<Comment?> GetCommentByIdAsync(int ticketId, int commentId)
         {
             var ticket = await TicketService.GetAsync(ticketId);
 

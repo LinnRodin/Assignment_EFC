@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace Assignment_EFC.Services
 {
-    internal class MenuService
+    public class MenuService
     {
-        public static async Task CreateNewTicketAsync()
+        public async Task CreateNewTicketAsync()
         {
             var ticket = new Ticket();
 
-            Console.Write("Description: ");
+            Console.Write("Enter description of the ticket: ");
             ticket.Description = Console.ReadLine() ?? "";
 
             Console.Write("Status (open, ongoing, closed): ");
@@ -35,8 +35,9 @@ namespace Assignment_EFC.Services
 
         }
 
-        public static async Task ListAllTicketsAsync()
-        {
+        public async Task ListAllTicketsAsync()
+        {   
+
             var tickets = await TicketService.GetAllAsync();
 
             if (tickets.Any())
@@ -51,10 +52,10 @@ namespace Assignment_EFC.Services
 
                     Console.WriteLine("Comments:");
 
-                    var comments = await CommentService.GetCommentAsync(comments.Id);
+                    var comments = await CommentService.GetAllCommentsAsync(ticket.Id);
 
                     if (comments.Any())
-                    {
+                    {   
                         foreach (Comment comment in comments)
                         {
                             Console.WriteLine($"  Comment ID: {comment.Id}");
@@ -79,7 +80,8 @@ namespace Assignment_EFC.Services
             }
         }
 
-        public static async Task ShowSpecificTicketAsync()
+
+        public async Task ShowSpecificTicketAsync()
         {
             Console.Write("Please enter ticket ID: ");
             var ticketId = int.Parse(Console.ReadLine() ?? "0");
@@ -98,22 +100,22 @@ namespace Assignment_EFC.Services
 
                     Console.WriteLine("Comments:");
 
-                    var comments = await CommentService.GetCommentAsync(comments.Id);
+                    Console.Write("Please enter comment ID: ");
+                    var commentId = int.Parse(Console.ReadLine() ?? "0");
 
-                    if (comments.Any())
+                    var comments = await CommentService.GetCommentByIdAsync(ticketId, commentId);
+
+                    if (comments != null)
                     {
-                        foreach (Comment comment in comments)
-                        {
-                            Console.WriteLine($"  Comment ID: {comment.Id}");
-                            Console.WriteLine($"  Timestamp: {comment.Timestamp}");
-                            Console.WriteLine($"  Customer ID: {comment.CustomerId}");
-                            Console.WriteLine($"  Ticket ID: {comment.TicketId}");
-                            Console.WriteLine($"  Text: {comment.Text}");
-                        }
+                        Console.WriteLine($"  Comment ID: {comments.Id}");
+                        Console.WriteLine($"  Timestamp: {comments.Timestamp}");
+                        Console.WriteLine($"  Customer ID: {comments.CustomerId}");
+                        Console.WriteLine($"  Ticket ID: {comments.TicketId}");
+                        Console.WriteLine($"  Text: {comments.Text}");
                     }
                     else
                     {
-                        Console.WriteLine("No comments for this ticket.");
+                        Console.WriteLine($"No comment with ID {commentId} was found for ticket {ticketId}.");
                     }
 
                     Console.WriteLine("");
@@ -132,7 +134,8 @@ namespace Assignment_EFC.Services
             }
         }
 
-        public static async Task UpdateSpecificTicketAsync()
+
+        public async Task UpdateSpecificTicketAsync()
         {
             Console.Write("Enter ticket ID: ");
             var ticketIdStr = Console.ReadLine();
@@ -168,7 +171,7 @@ namespace Assignment_EFC.Services
         }
 
 
-        public static async Task DeleteSpecificTicketAsync()
+        public async Task DeleteSpecificTicketAsync()
         {
             Console.Write("Enter ticket ID: ");
             var ticketIdStr = Console.ReadLine();
