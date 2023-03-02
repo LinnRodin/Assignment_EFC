@@ -1,4 +1,5 @@
-﻿using Assignment_EFC.Models;
+﻿using Assignment_EFC.Contexts;
+using Assignment_EFC.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,9 @@ namespace Assignment_EFC.Services
 {
     public class CommentService
     {
-        public async Task AddCommentAsync(int ticketId, Comment comment)
+        private static DataContext _context = new DataContext();
+
+        public static async Task AddCommentAsync(int ticketId, Comment comment)
         {
             var ticket = await TicketService.GetAsync(ticketId);
 
@@ -20,7 +23,31 @@ namespace Assignment_EFC.Services
             }
         }
 
-        public async Task UpdateCommentAsync(int ticketId, Comment comment)
+        public static async Task<List<Comment>> GetCommentsAsync(int ticketId)
+        {
+            var ticket = await TicketService.GetAsync(ticketId);
+
+            if (ticket != null)
+            {
+                return ticket.Comments.ToList();
+            }
+
+            return new List<Comment>();
+        }
+
+        public static async Task<Comment?> GetCommentAsync(int ticketId, int commentId)
+        {
+            var ticket = await TicketService.GetAsync(ticketId);
+
+            if (ticket != null)
+            {
+                return ticket.Comments.FirstOrDefault(c => c.Id == commentId);
+            }
+
+            return null;
+        }
+
+        public static async Task UpdateCommentAsync(int ticketId, Comment comment)
         {
             var ticket = await TicketService.GetAsync(ticketId);
 
@@ -38,7 +65,7 @@ namespace Assignment_EFC.Services
             }
         }
 
-        public async Task DeleteCommentAsync(int ticketId, int commentId)
+        public static async Task DeleteCommentAsync(int ticketId, int commentId)
         {
             var ticket = await TicketService.GetAsync(ticketId);
 
@@ -50,10 +77,11 @@ namespace Assignment_EFC.Services
                 {
                     ticket.Comments.Remove(commentToRemove);
 
-                    await TicketService.UpdateAsync(ticket);
+                    await TicketService.UpdateAsync(await TicketService.GetAsync(ticketId));
                 }
             }
         }
     }
+
 
 }

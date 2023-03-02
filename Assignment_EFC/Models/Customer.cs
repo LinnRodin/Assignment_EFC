@@ -1,6 +1,6 @@
 ﻿namespace Assignment_EFC.Models
 {
-    internal class Customer
+    public class Customer
     {
         public Guid Id { get; set; }
         public string FirstName { get; set; } = null!;

@@ -11,7 +11,7 @@ namespace Assignment_EFC.Services
 {
     internal class MenuService
     {
-        public async Task CreateNewTicketAsync()
+        public static async Task CreateNewTicketAsync()
         {
             var ticket = new Ticket();
 
@@ -35,7 +35,7 @@ namespace Assignment_EFC.Services
 
         }
 
-        public async Task ListAllTicketsAsync()
+        public static async Task ListAllTicketsAsync()
         {
             var tickets = await TicketService.GetAllAsync();
 
@@ -51,7 +51,7 @@ namespace Assignment_EFC.Services
 
                     Console.WriteLine("Comments:");
 
-                    var comments = await TicketService.GetAsync(ticket.Id);
+                    var comments = await CommentService.GetCommentAsync(comments.Id);
 
                     if (comments.Any())
                     {
@@ -79,7 +79,7 @@ namespace Assignment_EFC.Services
             }
         }
 
-        public async Task ShowSpecificTicketAsync()
+        public static async Task ShowSpecificTicketAsync()
         {
             Console.Write("Please enter ticket ID: ");
             var ticketId = int.Parse(Console.ReadLine() ?? "0");
@@ -93,12 +93,12 @@ namespace Assignment_EFC.Services
                     Console.WriteLine($"Ticket ID: {ticket.Id}");
                     Console.WriteLine($"Description: {ticket.Description}");
                     Console.WriteLine($"Status: {ticket.Status}");
-                    Console.WriteLine($"Customer ID: {ticket}");
+                    Console.WriteLine($"Customer ID: {ticket.CustomerId}");
                     Console.WriteLine($"Created At: {ticket.CreatedAt}");
 
                     Console.WriteLine("Comments:");
 
-                    var comments = await TicketService.GetAsync(ticket.Id);
+                    var comments = await CommentService.GetCommentAsync(comments.Id);
 
                     if (comments.Any())
                     {
@@ -132,7 +132,7 @@ namespace Assignment_EFC.Services
             }
         }
 
-        public async Task UpdateSpecificTicketAsync()
+        public static async Task UpdateSpecificTicketAsync()
         {
             Console.Write("Enter ticket ID: ");
             var ticketIdStr = Console.ReadLine();
@@ -168,7 +168,7 @@ namespace Assignment_EFC.Services
         }
 
 
-        public async Task DeleteSpecificTicketAsync()
+        public static async Task DeleteSpecificTicketAsync()
         {
             Console.Write("Enter ticket ID: ");
             var ticketIdStr = Console.ReadLine();

@@ -23,7 +23,8 @@ namespace Assignment_EFC.Services
                 Status = ticket.Status,
                 CustomerId = ticket.CustomerId,
                 CreatedAt = ticket.CreatedAt,
-                UpdatedAt = ticket.UpdatedAt
+                UpdatedAt = ticket.UpdatedAt,
+                Comments = new List<CommentEntity>()
             };
 
             _context.Add(_ticketEntity);
@@ -55,7 +56,7 @@ namespace Assignment_EFC.Services
                 {
                     Id = _ticket.Id,
                     Description = _ticket.Description,
-                    Status = _ticket.Status,
+                    Status = (TicketStatus)_ticket.Status,
                     CustomerId = _ticket.CustomerId,
                     CreatedAt = _ticket.CreatedAt,
                     UpdatedAt = _ticket.UpdatedAt,
@@ -65,8 +66,8 @@ namespace Assignment_EFC.Services
                         Text = x.Text,
                         Timestamp = x.Timestamp,
                         CustomerId = x.CustomerId,
-                        TicketId = x.TicketId
-                    })
+                        TicketId = x.TicketId,
+                    }).ToList()
                 });
 
             return _tickets;
@@ -80,7 +81,7 @@ namespace Assignment_EFC.Services
                 {
                     Id = _ticket.Id,
                     Description = _ticket.Description,
-                    Status = _ticket.Status,
+                    Status = (TicketStatus)_ticket.Status,
                     CustomerId = _ticket.CustomerId,
                     CreatedAt = _ticket.CreatedAt,
                     UpdatedAt = _ticket.UpdatedAt,
@@ -90,8 +91,8 @@ namespace Assignment_EFC.Services
                         Text = x.Text,
                         Timestamp = x.Timestamp,
                         CustomerId = x.CustomerId,
-                        TicketId = x.TicketId
-                    })
+                        TicketId = x.TicketId,
+                    }).ToList()
                 };
 
             else

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Assignment_EFC.Models
 {
-    internal class Comment
+    public class Comment
     {
         public int Id { get; set; }
         public string Text { get; set; } = null!;
