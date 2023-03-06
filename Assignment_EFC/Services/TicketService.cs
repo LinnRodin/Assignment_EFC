@@ -15,13 +15,24 @@ namespace Assignment_EFC.Services
     {
         private static DataContext _context = new DataContext();
 
-        public static async Task SaveAsync(Ticket ticket)
+        public static async Task SaveChangesAsync(Ticket ticket)
         {
+            var _customerEntity = new CustomerEntity
+            {
+                FirstName = ticket.FirstName,
+                LastName = ticket.LastName,
+                Email = ticket.Email,
+                PhoneNumber = ticket.PhoneNumber
+            };
+
+            _context.Add(_customerEntity);
+            await _context.SaveChangesAsync();
+
             var _ticketEntity = new TicketEntity
             {
                 Description = ticket.Description,
                 Status = ticket.Status,
-                CustomerId = ticket.CustomerId,
+                CustomerId = _customerEntity.Id,
                 CreatedAt = ticket.CreatedAt,
                 UpdatedAt = ticket.UpdatedAt,
                 Comments = new List<CommentEntity>()
@@ -38,7 +49,7 @@ namespace Assignment_EFC.Services
                     Text = comment.Text,
                     Timestamp = comment.Timestamp,
                     TicketId = _ticketEntity.Id,
-                    CustomerId = ticket.CustomerId
+                    CustomerId = _customerEntity.Id
                 };
 
                 _context.Add(_commentEntity);
@@ -47,11 +58,12 @@ namespace Assignment_EFC.Services
             await _context.SaveChangesAsync();
         }
 
+
         public static async Task<IEnumerable<Ticket>> GetAllAsync()
         {
             var _tickets = new List<Ticket>();
 
-            foreach (var _ticket in await _context.Tickets.Include(x => x.Comments).ToListAsync())
+            foreach (var _ticket in await _context.Tickets.Include(x => x.Comments).Include(x => x.Customer).ToListAsync())
                 _tickets.Add(new Ticket
                 {
                     Id = _ticket.Id,
@@ -60,6 +72,10 @@ namespace Assignment_EFC.Services
                     CustomerId = _ticket.CustomerId,
                     CreatedAt = _ticket.CreatedAt,
                     UpdatedAt = _ticket.UpdatedAt,
+                    FirstName = _ticket.Customer.FirstName,
+                    LastName = _ticket.Customer.LastName,
+                    Email = _ticket.Customer.Email,
+                    PhoneNumber = _ticket.Customer.PhoneNumber,
                     Comments = _ticket.Comments.Select(x => new Comment
                     {
                         Id = x.Id,
@@ -73,10 +89,18 @@ namespace Assignment_EFC.Services
             return _tickets;
         }
 
+
         public static async Task<Ticket> GetAsync(int id)
         {
-            var _ticket = await _context.Tickets.Include(x => x.Comments).FirstOrDefaultAsync(x => x.Id == id);
+            var _ticket = await _context.Tickets
+                .Include(x => x.Comments)
+                .Include(x => x.Customer)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
             if (_ticket != null)
+            {
+                var _customer = _ticket.Customer;
+
                 return new Ticket
                 {
                     Id = _ticket.Id,
@@ -85,6 +109,10 @@ namespace Assignment_EFC.Services
                     CustomerId = _ticket.CustomerId,
                     CreatedAt = _ticket.CreatedAt,
                     UpdatedAt = _ticket.UpdatedAt,
+                    FirstName = _customer.FirstName,
+                    LastName = _customer.LastName,
+                    Email = _customer.Email,
+                    PhoneNumber = _customer.PhoneNumber,
                     Comments = _ticket.Comments.Select(x => new Comment
                     {
                         Id = x.Id,
@@ -94,10 +122,13 @@ namespace Assignment_EFC.Services
                         TicketId = x.TicketId,
                     }).ToList()
                 };
-
+            }
             else
+            {
                 return null!;
+            }
         }
+
 
         public static async Task UpdateAsync(Ticket ticket)
         {

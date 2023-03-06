@@ -18,12 +18,24 @@ namespace Assignment_EFC.Services
             Console.Write("Enter description of the ticket: ");
             ticket.Description = Console.ReadLine() ?? "";
 
+            Console.Write("Enter firstname of the customer: ");
+            ticket.FirstName = Console.ReadLine() ?? "";
+
+            Console.Write("Enter lastname of the customer: ");
+            ticket.LastName = Console.ReadLine() ?? "";
+
+            Console.Write("Enter email of the customer: ");
+            ticket.Email = Console.ReadLine() ?? "";
+
+            Console.Write("Enter phonenumber of the customer: ");
+            ticket.PhoneNumber = Console.ReadLine() ?? "";
+
             Console.Write("Status (open, ongoing, closed): ");
             Enum.TryParse(Console.ReadLine(), out TicketStatus status);
             ticket.Status = status;
 
-            Console.Write("Customer ID: ");
-            var customerId = int.Parse(Console.ReadLine() ?? "0");
+            Console.Write("");
+            var customerId = int.Parse(Console.ReadLine() ?? "null");
             ticket.CustomerId = customerId;
 
             ticket.CreatedAt = DateTime.Now;
@@ -31,7 +43,7 @@ namespace Assignment_EFC.Services
 
             //Saves ticket to the database
 
-            await TicketService.SaveAsync(ticket);
+            await TicketService.SaveChangesAsync(ticket);
 
         }
 
