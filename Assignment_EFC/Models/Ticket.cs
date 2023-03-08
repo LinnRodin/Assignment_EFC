@@ -17,9 +17,15 @@ namespace Assignment_EFC.Models
         public string LastName { get; set; } = null!;
         public string Email { get; set; } = null!;
         public string? PhoneNumber { get; set; }
+        public string StreetName { get; set; } = null!;
+        public string PostalCode { get; set; } = null!;
+        public string City { get; set; } = null!;
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-        public List<Comment> Comments { get; set; } = null!;
+        public List<Comment> Comments { get; set; } = new List<Comment>();
+        
+
+
     }
 
 }

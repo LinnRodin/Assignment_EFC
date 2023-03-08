@@ -29,14 +29,24 @@ namespace Assignment_EFC.Services
 
             Console.Write("Enter phonenumber of the customer: ");
             ticket.PhoneNumber = Console.ReadLine() ?? "";
+            
+            Console.Write("Enter streetname of the customer: ");
+            ticket.StreetName = Console.ReadLine() ?? "";
+
+            Console.Write("Enter postal code of the customer: ");
+            ticket.PostalCode = Console.ReadLine() ?? "";
+
+            Console.Write("Enter city of the customer: ");
+            ticket.City = Console.ReadLine() ?? "";
+
+            Console.Write("Enter additional comments to the ticket: ");
+            string commentText = Console.ReadLine() ?? "";
+            Comment comment = new Comment { Text = commentText };
+            ticket.Comments.Add(comment); 
 
             Console.Write("Status (open, ongoing, closed): ");
             Enum.TryParse(Console.ReadLine(), out TicketStatus status);
             ticket.Status = status;
-
-            Console.Write("");
-            var customerId = int.Parse(Console.ReadLine() ?? "null");
-            ticket.CustomerId = customerId;
 
             ticket.CreatedAt = DateTime.Now;
 
@@ -113,7 +123,12 @@ namespace Assignment_EFC.Services
                     Console.WriteLine("Comments:");
 
                     Console.Write("Please enter comment ID: ");
-                    var commentId = int.Parse(Console.ReadLine() ?? "0");
+                    int commentId;
+                    if (!int.TryParse(Console.ReadLine(), out commentId))
+                    {
+                        Console.WriteLine("Invalid comment ID. Please enter a valid integer.");
+                        return;
+                    }
 
                     var comments = await CommentService.GetCommentByIdAsync(ticketId, commentId);
 

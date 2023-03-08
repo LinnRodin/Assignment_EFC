@@ -17,12 +17,23 @@ namespace Assignment_EFC.Services
 
         public static async Task SaveChangesAsync(Ticket ticket)
         {
+            var _addressEntity = new AddressEntity
+            {
+                StreetName = ticket.StreetName,
+                PostalCode = ticket.PostalCode,
+                City = ticket.City
+            };
+
+            _context.Add(_addressEntity);
+            await _context.SaveChangesAsync();
+
             var _customerEntity = new CustomerEntity
             {
                 FirstName = ticket.FirstName,
                 LastName = ticket.LastName,
                 Email = ticket.Email,
-                PhoneNumber = ticket.PhoneNumber
+                PhoneNumber = ticket.PhoneNumber,
+                AddressId = _addressEntity.Id
             };
 
             _context.Add(_customerEntity);
@@ -49,10 +60,20 @@ namespace Assignment_EFC.Services
                     Text = comment.Text,
                     Timestamp = comment.Timestamp,
                     TicketId = _ticketEntity.Id,
-                    CustomerId = _customerEntity.Id
+                    CustomerId = comment.CustomerId // set to the correct customer ID
                 };
 
                 _context.Add(_commentEntity);
+
+                // Associate the comment entity with the ticket entity
+                _ticketEntity.Comments.Add(_commentEntity);
+
+                // Save the comment to the CommentEntity if it doesn't already exist
+                if (_context.Comments.FirstOrDefault(c => c.Id == _commentEntity.Id) == null)
+                {
+                    _context.Comments.Add(_commentEntity);
+                    await _context.SaveChangesAsync();
+                }
             }
 
             await _context.SaveChangesAsync();
@@ -193,21 +214,16 @@ namespace Assignment_EFC.Services
 
         public static async Task DeleteAsync(int ticketId)
         {
-            var ticket = await _context.Tickets.Include(x => x.Comments).FirstOrDefaultAsync(x => x.Id == ticketId);
+            var ticket = await _context.Tickets
+                .Include(x => x.Comments)
+                .FirstOrDefaultAsync(x => x.Id == ticketId);
 
             if (ticket != null)
             {
-                foreach (var comment in ticket.Comments)
-                {
-                    _context.Remove(comment);
-                }
-
-                _context.Remove(ticket);
+                _context.Tickets.Remove(ticket);
                 await _context.SaveChangesAsync();
             }
         }
-
-
 
 
 

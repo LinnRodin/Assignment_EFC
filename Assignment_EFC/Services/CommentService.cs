@@ -16,72 +16,81 @@ namespace Assignment_EFC.Services
         {
             var ticket = await TicketService.GetAsync(ticketId);
 
-            if (ticket != null)
+            if (ticket == null)
             {
-                ticket.Comments.Add(comment);
-                await TicketService.UpdateAsync(ticket);
+                throw new InvalidOperationException("Ticket not found.");
             }
+
+            ticket.Comments.Add(comment);
+            await TicketService.UpdateAsync(ticket);
         }
 
         public static async Task<List<Comment>> GetAllCommentsAsync(int ticketId)
         {
             var ticket = await TicketService.GetAsync(ticketId);
 
-            if (ticket != null)
+            if (ticket == null)
             {
-                return ticket.Comments.ToList();
+                throw new InvalidOperationException("Ticket not found.");
             }
 
-            return new List<Comment>();
+            return ticket.Comments.ToList();
         }
 
         public static async Task<Comment?> GetCommentByIdAsync(int ticketId, int commentId)
         {
             var ticket = await TicketService.GetAsync(ticketId);
 
-            if (ticket != null)
+            if (ticket == null)
             {
-                return ticket.Comments.FirstOrDefault(c => c.Id == commentId);
+                throw new InvalidOperationException("Ticket not found.");
             }
 
-            return null;
+            return ticket.Comments.FirstOrDefault(c => c.Id == commentId);
         }
 
         public static async Task UpdateCommentAsync(int ticketId, Comment comment)
         {
             var ticket = await TicketService.GetAsync(ticketId);
 
-            if (ticket != null)
+            if (ticket == null)
             {
-                var existingComment = ticket.Comments.FirstOrDefault(c => c.Id == comment.Id);
-
-                if (existingComment != null)
-                {
-                    existingComment.Text = comment.Text;
-                    existingComment.Timestamp = comment.Timestamp;
-
-                    await TicketService.UpdateAsync(ticket);
-                }
+                throw new InvalidOperationException("Ticket not found.");
             }
+
+            var existingComment = ticket.Comments.FirstOrDefault(c => c.Id == comment.Id);
+
+            if (existingComment == null)
+            {
+                throw new InvalidOperationException("Comment not found.");
+            }
+
+            existingComment.Text = comment.Text;
+            existingComment.Timestamp = comment.Timestamp; 
+
+            await TicketService.UpdateAsync(ticket);
         }
 
         public static async Task DeleteCommentAsync(int ticketId, int commentId)
         {
             var ticket = await TicketService.GetAsync(ticketId);
 
-            if (ticket != null)
+            if (ticket == null)
             {
-                var commentToRemove = ticket.Comments.FirstOrDefault(c => c.Id == commentId);
-
-                if (commentToRemove != null)
-                {
-                    ticket.Comments.Remove(commentToRemove);
-
-                    await TicketService.UpdateAsync(await TicketService.GetAsync(ticketId));
-                }
+                throw new InvalidOperationException("Ticket not found.");
             }
+
+            var commentToRemove = ticket.Comments.FirstOrDefault(c => c.Id == commentId);
+
+            if (commentToRemove == null)
+            {
+                throw new InvalidOperationException("Comment not found.");
+            }
+
+            ticket.Comments.Remove(commentToRemove);
+            await TicketService.UpdateAsync(ticket);
         }
+
+
     }
-
-
 }
