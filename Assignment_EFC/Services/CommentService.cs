@@ -66,7 +66,7 @@ namespace Assignment_EFC.Services
             }
 
             existingComment.Text = comment.Text;
-            existingComment.Timestamp = comment.Timestamp; 
+            existingComment.Timestamp = comment.Timestamp;
 
             await TicketService.UpdateAsync(ticket);
         }
@@ -91,6 +91,16 @@ namespace Assignment_EFC.Services
             await TicketService.UpdateAsync(ticket);
         }
 
+        public static async Task AddCommentToTicketAsync(int ticketId, string text)
+        {
+            var comment = new Comment()
+            {
+                Text = text,
+                Timestamp = DateTime.UtcNow
+            };
 
+            await AddCommentAsync(ticketId, comment);
+        }
     }
+
 }

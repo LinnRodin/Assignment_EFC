@@ -39,11 +39,6 @@ namespace Assignment_EFC.Services
             Console.Write("Enter city of the customer: ");
             ticket.City = Console.ReadLine() ?? "";
 
-            Console.Write("Enter additional comments to the ticket: ");
-            string commentText = Console.ReadLine() ?? "";
-            Comment comment = new Comment { Text = commentText };
-            ticket.Comments.Add(comment); 
-
             Console.Write("Status (open, ongoing, closed): ");
             Enum.TryParse(Console.ReadLine(), out TicketStatus status);
             ticket.Status = status;
@@ -177,8 +172,19 @@ namespace Assignment_EFC.Services
             {
                 Console.WriteLine("Please enter the information in the fields you want to update. \n");
 
-                Console.Write("Description: ");
+                Console.Write("Description of ticket: ");
                 ticket.Description = Console.ReadLine()!;
+
+                Console.Write("Additional Comments for changes: ");
+                var commentText = Console.ReadLine()!;
+
+                var comment = new Comment
+                {
+                    Text = commentText,
+                    TicketId = ticketId
+                };
+
+                await CommentService.AddCommentAsync(ticketId, comment);
 
                 Console.Write("Status (Open, Ongoing, Closed): ");
                 if (!Enum.TryParse(Console.ReadLine(), out TicketStatus status))
@@ -196,6 +202,7 @@ namespace Assignment_EFC.Services
                 Console.WriteLine($"Ticket with ID {ticketId} not found.");
             }
         }
+
 
 
         public async Task DeleteSpecificTicketAsync()
