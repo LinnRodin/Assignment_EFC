@@ -9,27 +9,31 @@ using System.Threading.Tasks;
 
 namespace Assignment_EFC.Services
 {
+
+    
     public class MenuService
-    {
+    {   
+
         public async Task CreateNewTicketAsync()
         {
             var ticket = new Ticket();
+            var customer = new Customer();
 
             Console.Write("Enter description of the ticket: ");
             ticket.Description = Console.ReadLine() ?? "";
 
             Console.Write("Enter firstname of the customer: ");
-            ticket.FirstName = Console.ReadLine() ?? "";
+            customer.FirstName = Console.ReadLine() ?? "";
 
             Console.Write("Enter lastname of the customer: ");
-            ticket.LastName = Console.ReadLine() ?? "";
+            customer.LastName = Console.ReadLine() ?? "";
 
             Console.Write("Enter email of the customer: ");
-            ticket.Email = Console.ReadLine() ?? "";
+            customer.Email = Console.ReadLine() ?? "";
 
             Console.Write("Enter phonenumber of the customer: ");
-            ticket.PhoneNumber = Console.ReadLine() ?? "";
-            
+            customer.PhoneNumber = Console.ReadLine() ?? "";
+
             Console.Write("Enter streetname of the customer: ");
             ticket.StreetName = Console.ReadLine() ?? "";
 
@@ -39,18 +43,16 @@ namespace Assignment_EFC.Services
             Console.Write("Enter city of the customer: ");
             ticket.City = Console.ReadLine() ?? "";
 
-            Console.Write("Status (open, ongoing, closed): ");
-            Enum.TryParse(Console.ReadLine(), out TicketStatus status);
-            ticket.Status = status;
+            ticket.Status = TicketStatus.NotStarted;
 
             ticket.CreatedAt = DateTime.Now;
 
+            // Saves ticket to the database
+            await TicketService.SaveChangesAsync(ticket, customer);
 
-            //Saves ticket to the database
-
-            await TicketService.SaveChangesAsync(ticket);
-
+            Console.WriteLine("New ticket created successfully.");
         }
+
 
         public async Task ListAllTicketsAsync()
         {   
@@ -178,21 +180,21 @@ namespace Assignment_EFC.Services
                 Console.Write("Additional Comments for changes: ");
                 var commentText = Console.ReadLine()!;
 
-                var comment = new Comment
+                var comment = new CommentEntity
                 {
                     Text = commentText,
                     TicketId = ticketId
                 };
 
-                await CommentService.AddCommentAsync(ticketId, comment);
+                await CommentService.AddCommentAsync(comment);
 
-                Console.Write("Status (Open, Ongoing, Closed): ");
+                Console.Write("Status (Started, Closed): ");
                 if (!Enum.TryParse(Console.ReadLine(), out TicketStatus status))
                 {
                     Console.WriteLine($"Invalid status.");
                     return;
                 }
-                ticket.Status = status;
+                ticket.Status = status; 
 
                 await TicketService.UpdateAsync(ticket);
                 Console.WriteLine($"Ticket {ticket.Id} has been updated.");

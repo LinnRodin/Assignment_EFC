@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Assignment_EFC.Models.Entities
 {
     [Index(nameof(Email), IsUnique = true)]
-    internal class CustomerEntity
+    public class CustomerEntity
     {
         [Key]
         public int Id { get; set; }

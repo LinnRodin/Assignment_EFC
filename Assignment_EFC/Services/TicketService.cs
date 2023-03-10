@@ -15,7 +15,8 @@ namespace Assignment_EFC.Services
     {
         private static DataContext _context = new DataContext();
 
-        public static async Task SaveChangesAsync(Ticket ticket)
+
+        public static async Task SaveChangesAsync(Ticket ticket, Customer customer)
         {
             var _addressEntity = new AddressEntity
             {
@@ -29,11 +30,12 @@ namespace Assignment_EFC.Services
 
             var _customerEntity = new CustomerEntity
             {
-                FirstName = ticket.FirstName,
-                LastName = ticket.LastName,
-                Email = ticket.Email,
-                PhoneNumber = ticket.PhoneNumber,
-                AddressId = _addressEntity.Id
+                FirstName = customer.FirstName,
+                LastName = customer.LastName,
+                Email = customer.Email,
+                PhoneNumber = customer.PhoneNumber,
+                AddressId = _addressEntity.Id,
+
             };
 
             _context.Add(_customerEntity);
@@ -80,6 +82,7 @@ namespace Assignment_EFC.Services
         }
 
 
+
         public static async Task<IEnumerable<Ticket>> GetAllAsync()
         {
             var _tickets = new List<Ticket>();
@@ -89,14 +92,18 @@ namespace Assignment_EFC.Services
                 {
                     Id = _ticket.Id,
                     Description = _ticket.Description,
-                    Status = (TicketStatus)_ticket.Status,
+                    Status = Enum.Parse<TicketStatus>(_ticket.Status.ToString()),
                     CustomerId = _ticket.CustomerId,
                     CreatedAt = _ticket.CreatedAt,
                     UpdatedAt = _ticket.UpdatedAt,
-                    FirstName = _ticket.Customer.FirstName,
-                    LastName = _ticket.Customer.LastName,
-                    Email = _ticket.Customer.Email,
-                    PhoneNumber = _ticket.Customer.PhoneNumber,
+                    Customer = new Customer
+                    {
+                        Id = _ticket.Customer.Id,
+                        FirstName = _ticket.Customer.FirstName,
+                        LastName = _ticket.Customer.LastName,
+                        Email = _ticket.Customer.Email,
+                        PhoneNumber = _ticket.Customer.PhoneNumber
+                    },
                     Comments = _ticket.Comments.Select(x => new Comment
                     {
                         Id = x.Id,
@@ -120,8 +127,6 @@ namespace Assignment_EFC.Services
 
             if (_ticket != null)
             {
-                var _customer = _ticket.Customer;
-
                 return new Ticket
                 {
                     Id = _ticket.Id,
@@ -130,10 +135,14 @@ namespace Assignment_EFC.Services
                     CustomerId = _ticket.CustomerId,
                     CreatedAt = _ticket.CreatedAt,
                     UpdatedAt = _ticket.UpdatedAt,
-                    FirstName = _customer.FirstName,
-                    LastName = _customer.LastName,
-                    Email = _customer.Email,
-                    PhoneNumber = _customer.PhoneNumber,
+                    Customer = new Customer
+                    {
+                        Id = _ticket.Customer.Id,
+                        FirstName = _ticket.Customer.FirstName,
+                        LastName = _ticket.Customer.LastName,
+                        Email = _ticket.Customer.Email,
+                        PhoneNumber = _ticket.Customer.PhoneNumber
+                    },
                     Comments = _ticket.Comments.Select(x => new Comment
                     {
                         Id = x.Id,
@@ -151,8 +160,10 @@ namespace Assignment_EFC.Services
         }
 
 
+
         public static async Task UpdateAsync(Ticket ticket)
         {
+
             // Get the ticket entity from the database, including its comments
             var _ticketEntity = await _context.Tickets.Include(x => x.Comments).FirstOrDefaultAsync(x => x.Id == ticket.Id);
 
@@ -163,7 +174,7 @@ namespace Assignment_EFC.Services
                 if (!string.IsNullOrEmpty(ticket.Description))
                     _ticketEntity.Description = ticket.Description;
 
-                if (ticket.Status != 0)
+                if(ticket.Status != TicketStatus.NotStarted)
                     _ticketEntity.Status = ticket.Status;
 
                 if (ticket.CustomerId != 0)

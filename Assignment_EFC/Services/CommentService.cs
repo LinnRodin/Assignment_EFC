@@ -1,5 +1,6 @@
 ﻿using Assignment_EFC.Contexts;
 using Assignment_EFC.Models;
+using Assignment_EFC.Models.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,17 +13,19 @@ namespace Assignment_EFC.Services
     {
         private static DataContext _context = new DataContext();
 
-        public static async Task AddCommentAsync(int ticketId, Comment comment)
+        public static async Task AddCommentAsync(CommentEntity comment)
         {
-            var ticket = await TicketService.GetAsync(ticketId);
+            /*var ticket = await TicketService.GetAsync(ticketId);
 
             if (ticket == null)
             {
                 throw new InvalidOperationException("Ticket not found.");
-            }
+            } */
 
-            ticket.Comments.Add(comment);
-            await TicketService.UpdateAsync(ticket);
+            _context.Add(comment);
+            await _context.SaveChangesAsync();
+            //await TicketService.UpdateAsync(ticket); 
+
         }
 
         public static async Task<List<Comment>> GetAllCommentsAsync(int ticketId)
@@ -91,15 +94,15 @@ namespace Assignment_EFC.Services
             await TicketService.UpdateAsync(ticket);
         }
 
-        public static async Task AddCommentToTicketAsync(int ticketId, string text)
+        public static async Task AddCommentToTicketAsync(string text)
         {
-            var comment = new Comment()
+            var comment = new CommentEntity()
             {
                 Text = text,
                 Timestamp = DateTime.UtcNow
             };
 
-            await AddCommentAsync(ticketId, comment);
+            await AddCommentAsync(comment);
         }
     }
 

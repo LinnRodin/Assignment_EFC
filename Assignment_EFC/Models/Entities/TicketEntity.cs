@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Assignment_EFC.Models.Entities
 {
-    internal class TicketEntity
+    public class TicketEntity
     {
         [Key]
         public int Id { get; set; }

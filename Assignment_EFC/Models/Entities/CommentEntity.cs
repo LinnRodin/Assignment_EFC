@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Assignment_EFC.Models.Entities
 {
-    internal class CommentEntity
+    public class CommentEntity
     {
         [Key]
         public int Id { get; set; }

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Assignment_EFC.Models.Entities
 {
-    internal class AddressEntity
+    public class AddressEntity
     {
         [Key]
         public int Id { get; set; }
