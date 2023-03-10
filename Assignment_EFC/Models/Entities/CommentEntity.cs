@@ -19,9 +19,7 @@ namespace Assignment_EFC.Models.Entities
         public int TicketId { get; set; }
         public TicketEntity Ticket { get; set; } = null!;
 
-        [Required]
-        public int CustomerId { get; set; }
-        public CustomerEntity Customer { get; set; } = null!;
+    
     }
 
 

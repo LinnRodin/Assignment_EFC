@@ -62,7 +62,7 @@ namespace Assignment_EFC.Services
                     Text = comment.Text,
                     Timestamp = comment.Timestamp,
                     TicketId = _ticketEntity.Id,
-                    CustomerId = comment.CustomerId // set to the correct customer ID
+                   
                 };
 
                 _context.Add(_commentEntity);
@@ -109,7 +109,6 @@ namespace Assignment_EFC.Services
                         Id = x.Id,
                         Text = x.Text,
                         Timestamp = x.Timestamp,
-                        CustomerId = x.CustomerId,
                         TicketId = x.TicketId,
                     }).ToList()
                 });
@@ -148,7 +147,6 @@ namespace Assignment_EFC.Services
                         Id = x.Id,
                         Text = x.Text,
                         Timestamp = x.Timestamp,
-                        CustomerId = x.CustomerId,
                         TicketId = x.TicketId,
                     }).ToList()
                 };
@@ -208,7 +206,7 @@ namespace Assignment_EFC.Services
                         _commentEntity = new CommentEntity
                         {
                             Text = comment.Text,
-                            Timestamp = comment.Timestamp,
+                            Timestamp = DateTime.Now,
                             TicketId = _ticketEntity.Id
                         };
 
