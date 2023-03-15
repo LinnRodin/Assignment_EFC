@@ -70,7 +70,7 @@ namespace Assignment_EFC.Services
                 // Associate the comment entity with the ticket entity
                 _ticketEntity.Comments.Add(_commentEntity);
 
-                // Save the comment to the CommentEntity if it doesn't already exist
+                // Save the comment to the CommentEntity if it doesn't exist
                 if (_context.Comments.FirstOrDefault(c => c.Id == _commentEntity.Id) == null)
                 {
                     _context.Comments.Add(_commentEntity);
